@@ -1,0 +1,41 @@
+html, body {
+	height: 100%;
+	margin: 0px;
+	padding: 0px;
+}
+body {
+  position: relative;
+}
+div#topbar {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  height: 80px;
+}
+div#toggles {
+  position: absolute;
+  bottom: 0px;
+}
+div#map {
+  position: absolute;
+  top: 80px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+}
+div#address {
+  position: absolute;
+  top:0px;
+  left: 0px;
+  padding: 3px;
+}
+input#addr {
+  width: 400px;
+}
+div#info {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  text-align: right;
+}
