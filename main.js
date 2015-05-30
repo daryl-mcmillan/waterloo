@@ -87,3 +87,12 @@ addr.onkeypress = function() {
     }
   }, 500);
 };
+
+function showHash() {
+	var hash = document.location.hash.slice( 1 );
+	var address = decodeURIComponent(hash);
+	addr.value = address;
+	showAddress( address );
+}
+window.onhashchange = showHash;
+showHash();
