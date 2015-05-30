@@ -58,6 +58,7 @@ function addLayer( name, src, color ) {
 addLayer( 'power', 'data/power.json', 'red' );
 addLayer( 'trains', 'data/trains.json', 'blue' );
 addLayer( 'schools', 'data/schools.json', 'green' );
+addLayer( 'groceries', 'data/groceries.json', '#099' );
 
 function showAddress( address ) {
   console.log( { address: address } );
