@@ -2,8 +2,6 @@
 <head></head>
 <body>
 <div id="info"></div>
-<h2>bookmark for mapping</h2>
-<a href="javascript: void(document.body.appendChild( document.createElement('script') ).src='http://localhost/waterloo/lib/addToMap.js')">Add To Map</a>
 <script>
 function formatKey( type, id ) { return type + "-" + id; }
 
@@ -95,6 +93,23 @@ function showEverything() {
 			document.createTextNode( items[i].id )
 		);
 	}
+
+	info.appendChild(
+		document.createElement( "h2" )
+	).appendChild(
+		document.createTextNode( "bookmark for mapping" )
+	);
+	var bookmarkLink = document.createElement( "a" );
+	var link = document.location.href;
+	link = link.split( '#' )[0];
+	link = link.split( '?' )[0];
+	var parts = link.split( '/' );
+	parts.pop();
+	var newLink = parts.join( '/' ) + '/addToMap.js';
+	var bookmarkScript = 'void(document.body.appendChild( document.createElement("script") ).src=' + JSON.stringify( newLink ) + ')';
+	bookmarkLink.href = 'javascript:' + encodeURIComponent( bookmarkScript );
+	bookmarkLink.appendChild( document.createTextNode( "Add to Map" ) );
+	info.appendChild( bookmarkLink );
 }
 
 showEverything();

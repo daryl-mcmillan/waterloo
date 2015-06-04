@@ -18,7 +18,7 @@ void (function() {
 	var address = getAddress();
 	if( address ) {
 		var frame = document.createElement("iframe");
-		frame.src="http://localhost/waterloo/lib/control.html";
+		frame.src="http://waterloo.dcodes.org/mymarkers/control.html";
 		frame.onload = function() {
 			frame.contentWindow.postMessage({
 				id: address,
