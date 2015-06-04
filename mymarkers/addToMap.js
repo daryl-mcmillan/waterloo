@@ -17,8 +17,15 @@ void (function() {
 
 	var address = getAddress();
 	if( address ) {
+		var scriptTag = document.currentScript || document.body.lastElementChild;
+		var scriptSrc = scriptTag.src;
+		scriptSrc = scriptSrc.split('#')[0];
+		scriptSrc = scriptSrc.split('?')[0];
+		var parts = scriptSrc.split('/');
+		parts.pop();
+		var controllerSrc = parts.join('/') + '/index.html';
 		var frame = document.createElement("iframe");
-		frame.src="http://waterloo.dcodes.org/mymarkers/control.html";
+		frame.src = controllerSrc;
 		frame.onload = function() {
 			frame.contentWindow.postMessage({
 				id: address,
