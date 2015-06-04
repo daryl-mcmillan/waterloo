@@ -13,7 +13,7 @@ var marker = new google.maps.Marker({
 	map: map,
 	position: center
 });
-
+marker.setTitle( "Waterloo" );
 layers = {};
 
 function addLayer( name, src, color ) {
@@ -60,7 +60,10 @@ addLayer( 'trains', 'data/trains.json', 'blue' );
 addLayer( 'schools', 'data/schools.json', 'green' );
 addLayer( 'groceries', 'data/groceries.json', '#099' );
 
-function showAddress( address ) {
+function resolveAddress( address, func ) {
+  if( !address ) {
+    return;
+  }
   console.log( { address: address } );
   var search = { address: address, bounds: searchBounds };
 	geocoder.geocode( search, function( results, status ) {
@@ -69,11 +72,20 @@ function showAddress( address ) {
 			return;
 		}
 		var coords = results[0].geometry.location;
-		var title = results[0].formatted_address;
-		console.log( results[0] );
-		marker.setPosition(coords);
-		marker.setTitle(title);
-		map.setCenter(coords);
+		var address = results[0].formatted_address;
+		func({
+			coords: { lat: coords.lat(), lng: coords.lng() },
+			address: address
+		});
+	});
+}
+
+function showAddress( address ) {
+	resolveAddress( address, function( item ) {
+		console.log( item );
+		marker.setPosition(item.coords);
+		marker.setTitle(item.address);
+		map.setCenter(item.coords);
 	});
 }
 
@@ -97,3 +109,42 @@ function showHash() {
 }
 window.onhashchange = showHash;
 showHash();
+
+var localStorageMarkers = [];
+function showLocalStorageItem( item ) {
+	var marker = new google.maps.Marker({
+		map: map,
+		position: item.resolved.coords
+	});
+	marker.setTitle( item.resolved.address );
+	localStorageMarkers.push( marker );
+}
+function addLocalStorageItemToMap( key ) {
+	var item = JSON.parse(localStorage[key]);
+	console.log( item.address );
+	if( !item.resolved ) {
+		resolveAddress( item.address, function( info ) {
+			item.resolved = info;
+			localStorage.setItem( key, JSON.stringify(item) );
+			showLocalStorageItem( item );
+		});
+	} else {
+		showLocalStorageItem( item );
+	}
+}
+
+function addLocalStorageItems() {
+	for( var i=0; i<localStorageMarkers.length; i++ ) {
+		localStorageMarkers[i].setMap(null);
+	}
+	localStorageMarkers = [];
+	var items = [];
+	for( var key in localStorage ) {
+		if( !key.startsWith( "mapItem-" ) ) {
+			continue;
+		}
+		addLocalStorageItemToMap( key );
+	}
+}
+addLocalStorageItems();
+window.addEventListener( "storage", addLocalStorageItems, false );

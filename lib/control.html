@@ -1,0 +1,104 @@
+<html>
+<head></head>
+<body>
+<div id="info"></div>
+<h2>bookmark for mapping</h2>
+<a href="javascript: void(document.body.appendChild( document.createElement('script') ).src='http://localhost/waterloo/lib/addToMap.js')">Add To Map</a>
+<script>
+function formatKey( type, id ) { return type + "-" + id; }
+
+function getItem( type, id ) {
+	var raw = localStorage.getItem( formatKey( type, id ) );
+	return raw ? JSON.parse( raw ) : undefined;
+}
+
+function setItem( type, id, value ) {
+	var raw = JSON.stringify( value );
+	localStorage.setItem( formatKey( type, id ), raw );
+}
+
+function removeItem( type, id ) {
+	localStorage.removeItem( formatKey( type, id ) );
+}
+
+function getItems( type ) {
+	var items = [];
+	var prefix = type + "-";
+	for( var key in localStorage ) {
+		if( key.startsWith( prefix ) ) {
+			items.push( JSON.parse( localStorage[key] ) );
+		}
+	}
+	return items;
+}
+
+function getMapItems() {
+	return getItems( "mapItem" );
+}
+
+function allowOrigin( origin ) {
+	if( getItem( "allowedOrigin", origin ) ) {
+		return true;
+	}
+	if( confirm( 'allow map entries from ' + origin + "?" ) ) {
+		setItem( "allowedOrigin", origin, origin );
+		return true;
+	}
+	return false;
+}
+
+function handleMessage( event ) {
+	if( !allowOrigin(event.origin) ) {
+		console.log( { message: 'origin not allowed', origin: event.origin } );
+		return;
+	}
+
+	var data = event.data;
+	if( data.id ) {
+		console.log( {adding: data } );
+		setItem( "mapItem", data.id, data );
+	}
+}
+window.addEventListener( "message", handleMessage, false );
+
+
+function showEverything() {
+	var info = document.querySelector("#info");
+	info.innerHTML = "";
+
+	var origins = getItems( "allowedOrigin" );
+	info.appendChild(
+		document.createElement( "h2" )
+	).appendChild(
+		document.createTextNode( "allowed origins" )
+	);
+	var originList = info.appendChild( document.createElement( "ul" ) );
+	for( var i=0; i<origins.length; i++ ) {
+		originList.appendChild(
+			document.createElement( "li" )
+		).appendChild(
+			document.createTextNode( origins[i] )
+		);
+	}
+
+	var items = getItems( "mapItem" );
+	info.appendChild(
+		document.createElement( "h2" )
+	).appendChild(
+		document.createTextNode( "items" )
+	);
+	var itemList = info.appendChild( document.createElement( "ul" ) );
+	for( var i=0; i<items.length; i++ ) {
+		itemList.appendChild(
+			document.createElement( "li" )
+		).appendChild(
+			document.createTextNode( items[i].id )
+		);
+	}
+}
+
+showEverything();
+
+</script>
+</body>
+</html>
