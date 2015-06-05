@@ -117,6 +117,9 @@ function showLocalStorageItem( item ) {
 		position: item.resolved.coords
 	});
 	marker.setTitle( item.resolved.address );
+	google.maps.event.addListener(marker, 'click', function() {
+		window.open(item.link, "mapDetails");
+	});
 	localStorageMarkers.push( marker );
 }
 function addLocalStorageItemToMap( key ) {
