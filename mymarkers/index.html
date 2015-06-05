@@ -59,6 +59,15 @@ function handleMessage( event ) {
 }
 window.addEventListener( "message", handleMessage, false );
 
+function createRemoveButton( label, type, id ) {
+	var button = document.createElement( "button" );
+	button.appendChild( document.createTextNode( label ) );
+	button.onclick = function() {
+		removeItem( type, id );
+		showEverything();
+	};
+	return button;
+}
 
 function showEverything() {
 	var info = document.querySelector("#info");
@@ -72,14 +81,28 @@ function showEverything() {
 	);
 	var originList = info.appendChild( document.createElement( "ul" ) );
 	for( var i=0; i<origins.length; i++ ) {
-		originList.appendChild(
+		var listItem = originList.appendChild(
 			document.createElement( "li" )
-		).appendChild(
+		);
+		listItem.appendChild(
 			document.createTextNode( origins[i] )
 		);
+		var removeButton = createRemoveButton( "remove", "allowedOrigin", origins[i] );
+		listItem.appendChild( removeButton );
 	}
 
 	var items = getItems( "mapItem" );
+	items.sort( function( a, b ) {
+		a = a.address.replace(/^[0-9 -]+/,"").toLowerCase();
+		b = b.address.replace(/^[0-9 -]+/,"").toLowerCase();
+		if( a < b ) {
+			return -1;
+		} else if( b < a ) {
+			return 1;
+		} else {
+			return 0;
+		}
+	});
 	info.appendChild(
 		document.createElement( "h2" )
 	).appendChild(
@@ -87,11 +110,14 @@ function showEverything() {
 	);
 	var itemList = info.appendChild( document.createElement( "ul" ) );
 	for( var i=0; i<items.length; i++ ) {
-		itemList.appendChild(
+		var listItem = itemList.appendChild(
 			document.createElement( "li" )
-		).appendChild(
+		);
+		listItem.appendChild(
 			document.createTextNode( items[i].id )
 		);
+		var removeButton = createRemoveButton( "remove", "mapItem", items[i].id );
+		listItem.appendChild( removeButton );
 	}
 
 	info.appendChild(
@@ -113,6 +139,7 @@ function showEverything() {
 }
 
 showEverything();
+window.addEventListener( "storage", showEverything, false );
 
 </script>
 </body>
