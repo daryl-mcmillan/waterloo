@@ -116,6 +116,15 @@ function showEverything() {
 		listItem.appendChild(
 			document.createTextNode( items[i].id )
 		);
+		listItem.appendChild(
+			document.createElement( "br" )
+		);
+		var link = document.createElement("a");
+		link.href = items[i].link;
+		link.appendChild(
+			document.createTextNode( items[i].link )
+		);
+		listItem.appendChild( link );
 		var removeButton = createRemoveButton( "remove", "mapItem", items[i].id );
 		listItem.appendChild( removeButton );
 	}
